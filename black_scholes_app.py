@@ -120,7 +120,7 @@ with tab1:
 
     fig.colorbar(surf, shrink=0.5, aspect=10, label='Option Price')
 
-    st.pyplot(fig
+    st.pyplot(fig)
 
 # --- Binomial Tree Tab ---
 with tab2:
