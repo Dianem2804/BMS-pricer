@@ -1,4 +1,4 @@
+streamlit
 scipy
 numpy
-matplotlib.pyplot
-streamlit
+matplotlib
