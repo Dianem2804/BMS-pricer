@@ -90,6 +90,37 @@ with tab1:
         st.success(f"{option_type.capitalize()} Price: {price:.2f}")
         st.markdown("### Greeks")
         st.write(f"Delta: {delta:.4f} | Gamma: {gamma:.4f} | Vega: {vega:.4f} | Theta: {theta:.4f} | Rho: {rho:.4f}")
+     # --- Plotting ---
+
+    st.markdown("### 📊 Option Price Surface vs Strike and Volatility")
+
+    # Grilles pour strike et volatilité
+    strike_range = np.linspace(K * 0.5, K * 1.5, 50)
+    sigma_range = np.linspace(0.05, 1.0, 50)
+
+    Strike, Sigma = np.meshgrid(strike_range, sigma_range)
+
+    Prices = np.zeros_like(Strike)
+
+    # Calcul des prix sur la grille
+    for i in range(Strike.shape[0]):
+        for j in range(Strike.shape[1]):
+            Prices[i, j] = black_scholes(S, Strike[i, j], T, r, Sigma[i, j], option_type)[0]
+
+    # Plot 3D
+    fig = plt.figure(figsize=(10,7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    surf = ax.plot_surface(Strike, Sigma, Prices, cmap='viridis', edgecolor='none', alpha=0.9)
+
+    ax.set_xlabel('Strike Price')
+    ax.set_ylabel('Volatility (σ)')
+    ax.set_zlabel('Option Price')
+    ax.set_title('Option Price Surface vs Strike and Volatility')
+
+    fig.colorbar(surf, shrink=0.5, aspect=10, label='Option Price')
+
+    st.pyplot(fig
 
 # --- Binomial Tree Tab ---
 with tab2:
