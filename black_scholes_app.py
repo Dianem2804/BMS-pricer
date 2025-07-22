@@ -37,7 +37,7 @@ def calculate_greeks(S, K, T, r, sigma, option_type='call'):
 
 # --- Streamlit UI ---
 st.set_page_config(page_title="Black-Scholes Pricer", layout="wide")
-st.title("📈 Black-Scholes Option Pricer with Greeks and Charts")
+st.title("📈 Black-Scholes European Option Pricer with Greeks and Charts")
 
 col1, col2 = st.columns(2)
 
