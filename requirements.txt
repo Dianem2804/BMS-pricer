@@ -1,3 +1,4 @@
-scipy.stats
+scipy
 numpy
 matplotlib.pyplot
+streamlit
