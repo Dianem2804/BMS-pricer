@@ -3,6 +3,7 @@ from scipy.stats import norm
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D  # nécessaire pour 3D
 
 # --- Black-Scholes Pricing ---
 def black_scholes(S, K, T, r, sigma, option_type='call'):
@@ -63,25 +64,33 @@ if st.button("Calculate Option Price"):
     st.write(f"**Rho:** {rho:.4f}")
 
     # --- Plotting ---
-    st.markdown("### 📊 Option Price vs Strike and Volatility")
 
-    strike_range = np.linspace(K * 0.5, K * 1.5, 100)
-    prices_vs_strike = [black_scholes(S, k, T, r, sigma, option_type)[0] for k in strike_range]
+    st.markdown("### 📊 Option Price Surface vs Strike and Volatility")
 
-    sigma_range = np.linspace(0.05, 1.0, 100)
-    prices_vs_sigma = [black_scholes(S, K, T, r, s, option_type)[0] for s in sigma_range]
+    # Grilles pour strike et volatilité
+    strike_range = np.linspace(K * 0.5, K * 1.5, 50)
+    sigma_range = np.linspace(0.05, 1.0, 50)
 
-    fig1, ax1 = plt.subplots()
-    ax1.plot(strike_range, prices_vs_strike)
-    ax1.set_xlabel("Strike Price")
-    ax1.set_ylabel("Option Price")
-    ax1.set_title("Price vs Strike")
-    st.pyplot(fig1)
+    Strike, Sigma = np.meshgrid(strike_range, sigma_range)
 
-    fig2, ax2 = plt.subplots()
-    ax2.plot(sigma_range, prices_vs_sigma)
-    ax2.set_xlabel("Volatility (σ)")
-    ax2.set_ylabel("Option Price")
-    ax2.set_title("Price vs Volatility")
-    st.pyplot(fig2)
+    Prices = np.zeros_like(Strike)
 
+    # Calcul des prix sur la grille
+    for i in range(Strike.shape[0]):
+        for j in range(Strike.shape[1]):
+            Prices[i, j] = black_scholes(S, Strike[i, j], T, r, Sigma[i, j], option_type)[0]
+
+    # Plot 3D
+    fig = plt.figure(figsize=(10,7))
+    ax = fig.add_subplot(111, projection='3d')
+
+    surf = ax.plot_surface(Strike, Sigma, Prices, cmap='viridis', edgecolor='none', alpha=0.9)
+
+    ax.set_xlabel('Strike Price')
+    ax.set_ylabel('Volatility (σ)')
+    ax.set_zlabel('Option Price')
+    ax.set_title('Option Price Surface vs Strike and Volatility')
+
+    fig.colorbar(surf, shrink=0.5, aspect=10, label='Option Price')
+
+    st.pyplot(fig)
